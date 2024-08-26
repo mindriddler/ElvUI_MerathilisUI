@@ -31,6 +31,7 @@ local GetNamePlates = C_NamePlate.GetNamePlates
 local LeftButtonIcon = "|TInterface\\TUTORIALFRAME\\UI-TUTORIAL-FRAME:13:11:0:-1:512:512:12:66:230:307|t"
 
 local eventList = {
+	"BeledarsSpawn",
 	"RadiantEchoes",
 	"CommunityFeast",
 	"SiegeOnDragonbaneKeep",
@@ -697,6 +698,46 @@ local functionFactory = {
 }
 
 local eventData = {
+		BeledarsSpawn = {
+		dbKey = "beledarsSpawn",
+		args = {
+			icon = 5929570,
+			type = "loopTimer",
+			hasWeeklyReward = false,
+			duration = 1800,
+			interval = 10800,
+			barColor = colorPlatte.purple,
+			flash = true,
+			eventName = L["Beledar's Spawn"],
+			location = GetMapInfo(2215).name,
+			label = L["Beledar's Spawn"],
+			runningText = L["Darkness"],
+			filter = function(args)
+				if args.stopAlertIfPlayerNotEnteredDragonlands and not IsQuestFlaggedCompleted(67700) then
+					return false
+				end
+				return true
+			end,
+			startTimestamp = (function()
+				local timestampTable = {
+					[1] = 1679754600, -- NA
+					[2] = 1679751000, -- KR
+					[3] = 1679752800, -- EU
+					[4] = 1679751000, -- TW
+					[5] = 1679751000, -- CN
+				}
+				local region = GetCurrentRegion()
+				-- TW is not a real region, so we need to check the client language if player in KR
+				if region == 2 and MER.Locale ~= "koKR" then
+					region = 4
+				end
+
+				return timestampTable[region]
+			end)(),
+			onClick = worldMapIDSetter(2215),
+			onClickHelpText = L["Click to show location"],
+		},
+	},
 	RadiantEchoes = {
 		dbKey = "radiantEchoes",
 		args = {
